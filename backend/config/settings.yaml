@@ -1,0 +1,244 @@
+# 智能旅游助手 - 应用配置
+
+# ==================== 应用基础配置 ====================
+app:
+  name: "智能旅游助手"
+  version: "1.0.0"
+  description: "基于 LangChain 和 LangGraph 的一站式旅游陪伴智能体"
+  debug: false
+  log_level: "INFO"
+
+# ==================== 服务配置 ====================
+server:
+  host: "0.0.0.0"
+  port: 8000
+  reload: false
+  workers: 1
+
+# ==================== CORS 配置 ====================
+cors:
+  origins:
+    - "http://localhost:5173"
+    - "http://127.0.0.1:5173"
+    - "http://localhost:3000"
+  allow_credentials: true
+  allow_methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+  allow_headers: ["*"]
+
+# ==================== LLM 模型配置 ====================
+llm:
+  # 默认模型
+  default_model: "qwen-max"
+  
+  # 备用模型
+  fallback_model: "glm-4"
+  
+  # 通用参数
+  temperature: 0.7
+  max_tokens: 4096
+  top_p: 0.9
+  frequency_penalty: 0
+  presence_penalty: 0
+  
+  # 模型列表配置
+  models:
+    qwen-max:
+      provider: "qwen"
+      model_name: "qwen-max"
+      temperature: 0.7
+      max_tokens: 4096
+      
+    qwen-plus:
+      provider: "qwen"
+      model_name: "qwen-plus"
+      temperature: 0.7
+      max_tokens: 4096
+      
+    glm-4:
+      provider: "zhipu"
+      model_name: "glm-4"
+      temperature: 0.7
+      max_tokens: 4096
+      
+    glm-4-flash:
+      provider: "zhipu"
+      model_name: "glm-4-flash"
+      temperature: 0.7
+      max_tokens: 4096
+
+# ==================== Embedding 配置 ====================
+embedding:
+  default_model: "text-embedding-v3"
+  
+  models:
+    text-embedding-v3:
+      provider: "qwen"
+      model_name: "text-embedding-v3"
+      dimensions: 1024
+
+# ==================== Agent 配置 ====================
+agent:
+  # 主 Agent 配置
+  travel_agent:
+    name: "travel_assistant"
+    description: "智能旅游助手，提供行程规划、景点推荐、天气查询等服务"
+    max_iterations: 10
+    
+  # 行程规划 Agent
+  itinerary_planner:
+    name: "itinerary_planner"
+    description: "专门负责行程规划"
+    max_iterations: 5
+    
+  # 应急处理 Agent
+  emergency_handler:
+    name: "emergency_handler"
+    description: "处理旅游中的紧急情况"
+    max_iterations: 3
+
+# ==================== 工具配置 ====================
+tools:
+  # 高德地图配置
+  amap:
+    enabled: true
+    base_url: "https://restapi.amap.com/v3"
+    timeout: 30
+    
+    # 支持的功能
+    features:
+      - poi_search
+      - weather
+      - geocode
+      - regeocode
+      - direction
+      
+  # 联网搜索配置
+  search:
+    enabled: true
+    provider: "duckduckgo"  # duckduckgo(免费，无需API Key), bing(需申请), serper(需翻墙)
+    timeout: 30
+    max_results: 10
+    # DuckDuckGo 无需配置，直接使用
+    # 必应搜索设置（可选）
+    bing:
+      endpoint: "https://api.bing.microsoft.com/v7.0"
+      market: "zh-CN"  # 中国区域
+      # API Key 从环境变量 BING_SEARCH_KEY 读取
+    
+  # 其他工具
+  calculator:
+    enabled: true
+    
+  datetime:
+    enabled: true
+
+# ==================== 记忆系统配置 ====================
+memory:
+  enabled: true
+  
+  # 对话记忆配置
+  conversation:
+    max_history: 20
+    summary_threshold: 10  # 超过此条数后触发总结
+    
+  # 用户画像配置
+  user_profile:
+    enabled: true
+    storage: "sqlite"  # sqlite, redis
+    
+  # 向量记忆配置
+  vector_memory:
+    enabled: true
+    storage: "chroma"  # chroma, faiss
+    collection_name: "travel_memories"
+    similarity_threshold: 0.8
+
+# ==================== MCP 协议配置 ====================
+mcp:
+  enabled: true
+  server_name: "travel-agent-mcp"
+  server_version: "1.0.0"
+  
+  # 传输方式: stdio, sse
+  transport: "sse"
+  
+  # SSE 配置
+  sse:
+    endpoint: "/mcp/sse"
+    message_endpoint: "/mcp/messages"
+
+# ==================== A2A 协议配置 ====================
+a2a:
+  enabled: true
+  server_name: "travel-agent-a2a"
+  server_version: "1.0.0"
+  
+  # gRPC 配置
+  grpc:
+    port: 10000
+    max_workers: 10
+    
+  # HTTP 配置
+  http:
+    endpoint: "/a2a"
+
+# ==================== 数据库配置 ====================
+database:
+  # 主数据库
+  primary:
+    type: "sqlite"
+    url: "sqlite+aiosqlite:///./data/travel_agent.db"
+    
+  # 连接池配置
+  pool:
+    pool_size: 5
+    max_overflow: 10
+    pool_timeout: 30
+    pool_recycle: 3600
+
+# ==================== 缓存配置 ====================
+cache:
+  # Redis 配置（可选）
+  redis:
+    enabled: false
+    host: "localhost"
+    port: 6379
+    db: 0
+    # password: null
+    
+  # 内存缓存配置
+  memory:
+    enabled: true
+    max_size: 1000
+    ttl: 3600  # 秒
+
+# ==================== 安全配置 ====================
+security:
+  # JWT 配置
+  jwt:
+    algorithm: "HS256"
+    access_token_expire_minutes: 10080  # 7天
+    
+  # 速率限制
+  rate_limit:
+    enabled: true
+    requests_per_minute: 60
+    
+  # 内容安全
+  content_safety:
+    enabled: true
+    max_input_length: 4000
+
+# ==================== 监控配置 ====================
+monitoring:
+  # 日志配置
+  logging:
+    format: "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+    file: "./logs/travel_agent.log"
+    rotation: "1 day"
+    retention: "30 days"
+    
+  # 指标收集
+  metrics:
+    enabled: true
+    endpoint: "/metrics"

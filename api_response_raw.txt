@@ -1,0 +1,1 @@
+{"session_id":"api-file-test","message":{"role":"assistant","content":"杭州西湖是著名的风景旅游胜地，以山水之美闻名，拥有十景如断桥残雪、苏堤春晓等，吸引了无数游客前来游览。西湖不仅自然风光秀丽，还有丰富的历史文化底蕴。","type":"text","tool_calls":null,"tool_call_id":null,"timestamp":"2026-04-17T16:40:28.307302","metadata":null},"usage":null,"tools_used":["instant_answer"],"processing_time":6.975718}
